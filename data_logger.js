@@ -11,6 +11,9 @@ const supabase = createClient(
 
 app.post("/raw_logs", async (req, res) => {
 
+  console.log("HEADERS:", req.headers)
+  console.log("BODY:", req.body)
+
   const payload = req.body
   const imei = payload.data?.imei
 
