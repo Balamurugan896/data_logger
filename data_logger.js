@@ -2,6 +2,22 @@ import express from "express"
 import { createClient } from "@supabase/supabase-js"
 
 const app = express()
+
+// Debug: show raw data sent by device
+app.use((req, res, next) => {
+  let raw = "";
+
+  req.on("data", chunk => {
+    raw += chunk;
+  });
+
+  req.on("end", () => {
+    console.log("RAW BODY:", raw);
+  });
+
+  next();
+});
+
 app.use(express.json())
 
 const supabase = createClient(
