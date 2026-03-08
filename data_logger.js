@@ -39,19 +39,19 @@ app.post("/raw_logs", async (req, res) => {
     device_id: device.id,
     payload: payload
   })
-  .select()
+  .select();
 
-  console.log("Insert result:", data)
-  console.log("Insert error:", error)
-
+  console.log("Insert DATA:", data);
+  console.log("Insert ERROR:", error);
 
   if (error) {
-    return res.status(500).json(error)
-  }
+  return res.status(500).json({ error });
+}
 
-  res.json({ status: "log stored" })
-})
-
+  res.json({
+  status: "log stored",
+  db_result: data
+});
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
