@@ -27,7 +27,8 @@ const supabase = createClient(
 
 app.post("/raw_logs", async (req, res) => {
 
-  console.log("Incoming body:", req.body);
+   // Show full object depth (fix for [Object])
+  console.dir(req.body, { depth: null });
 
   const payload = req.body;
   const imei = payload?.data?.imei;
