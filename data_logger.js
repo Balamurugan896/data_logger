@@ -33,12 +33,17 @@ app.post("/raw_logs", async (req, res) => {
   }
 
   // Insert raw JSON log
-  const { error } = await supabase
-    .from("raw_logs")
-    .insert({
-      device_id: device.id,
-      payload: payload
-    })
+  const { data, error } = await supabase
+  .from("raw_logs")
+  .insert({
+    device_id: device.id,
+    payload: payload
+  })
+  .select()
+
+  console.log("Insert result:", data)
+  console.log("Insert error:", error)
+
 
   if (error) {
     return res.status(500).json(error)
