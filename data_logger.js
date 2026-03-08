@@ -5,49 +5,42 @@ const app = express()
 app.use(express.json())
 
 const supabase = createClient(
-  "https://jsusmmsnkzdymiznmtsj.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzdXNtbXNua3pkeW1pem5tdHNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1NzgzMzYsImV4cCI6MjA4ODE1NDMzNn0.bM0f5dp4t1HiFZLL3EDbL74sXsx0tjw498ZbwIWqJ8Q"
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_KEY
 )
 
 app.post("/raw_logs", async (req, res) => {
 
-  console.log("Incoming body:", req.body);
-
-  const payload = req.body;
-  const imei = payload?.data?.imei;
+  const payload = req.body
+  const imei = payload?.data?.imei
 
   if (!imei) {
-    return res.status(400).json({ error: "IMEI missing" });
+    return res.status(400).json({ error: "IMEI missing" })
   }
 
-  const { data: device, error: deviceError } = await supabase
+  const { data: device } = await supabase
     .from("devices")
     .select("id")
     .eq("imei_no", imei)
-    .single();
+    .single()
 
-  if (deviceError || !device) {
-    return res.status(404).json({ error: "Device not registered" });
+  if (!device) {
+    return res.status(404).json({ error: "Device not registered" })
   }
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("raw_logs")
     .insert({
       device_id: device.id,
       payload: payload
     })
-    .select();
-
-  console.log("Insert DATA:", data);
-  console.log("Insert ERROR:", error);
 
   if (error) {
-    return res.status(500).json({ error });
+    return res.status(500).json({ error })
   }
 
-  res.json({ status: "log stored", db_result: data });
-
-});
+  res.json({ status: "log stored" })
+})
 
 const PORT = process.env.PORT || 3000;
 
