@@ -44,19 +44,17 @@ app.post("/raw_logs", async (req, res) => {
     return res.status(404).json({ error: "Device not registered" })
   }
 
-  const { error } = await supabase
-    .from("raw_logs")
-    .insert({
-      device_id: device.id,
-      payload: payload
-    })
+const { data, error } = await supabase
+  .from("raw_logs")
+  .insert({
+    device_id: device.id,
+    payload: payload
+  })
+  .select();
 
-  if (error) {
-    return res.status(500).json({ error })
-  }
+console.log("Insert DATA:", data);
+console.log("Insert ERROR:", error);
 
-  res.json({ status: "log stored" })
-})
 
 const PORT = process.env.PORT || 3000;
 
