@@ -12,7 +12,7 @@ const supabase = createClient(
 app.post("/raw_logs", async (req, res) => {
 
   const payload = req.body
-  const imei = payload?.data?.imei
+  const imei = payload?.data?.imei || payload?.imei;
 
   if (!imei) {
     return res.status(400).json({ error: "IMEI missing" })
